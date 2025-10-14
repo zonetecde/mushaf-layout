@@ -263,32 +263,22 @@ async function generateLines(pageData: any, page: number) {
     const finalLines = lines
         .map((bucket, idx) => {
             const lineNumber = idx + 1;
-            const first = bucket[0] as any;
+            const first = (bucket as any[])[0];
 
-            // Header/basmala
+            // surah-header / basmala
             if (first?.type === "surah-header" || first?.type === "basmala") {
-                return [
-                    {
-                        line: lineNumber,
-                        ...(first as NonTextItem),
-                    },
-                ];
+                return { line: lineNumber, ...(first as NonTextItem) };
             }
 
-            // Texte
+            // text
             const payload = buildTextLinePayload(bucket as WordItem[]);
-            if (!payload) return [];
+            if (!payload) return null;
 
-            return [
-                {
-                    line: lineNumber,
-                    ...payload,
-                },
-            ];
+            return { line: lineNumber, ...payload };
         })
-        .filter((arr) => arr.length > 0);
+        .filter(Boolean) as any[];
 
-    return finalLines as any[];
+    return finalLines;
 }
 
 /* ------------------------------- Main generator ------------------------------ */
@@ -337,7 +327,7 @@ async function generateAllPages() {
     console.log("\n🎉 Terminé !");
     console.log(`✅ Succès: ${ok}`);
     console.log(`❌ Erreurs: ${ko}`);
-    console.log(`📁 Sortie: ${path.join(__dirname, "mushaf")}`);
+    console.log(`📁 Sortie: ${outputPath}`);
 }
 
 /* --------------------------------- Exports ---------------------------------- */
