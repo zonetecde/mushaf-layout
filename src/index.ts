@@ -163,12 +163,15 @@ async function generateLines(pageData: any, page: number) {
             const prevIdx = lastIdx - 1;
 
             // V2: ajoute le glyph du numéro (contenu dans le dernier élément V2)
+            const verseNumberPosition = verseWords[lastIdx]?.position as number;
             if (verseWords[prevIdx]?.qpc && verseWords[lastIdx]?.qpc) {
                 verseWords[prevIdx].qpc = `${verseWords[prevIdx].qpc} ${verseWords[lastIdx].qpc}`.trim();
             }
-            // V1: récupère le glyph du numéro via mapping (position endWord + 2)
-            const endWordPos = verseWords[prevIdx]?.position as number;
-            const verseEndGlyphV1 = QPCFontProvider.getWordGlyph(verseSurahNumber, verse.verseNumber, endWordPos + 2, "1");
+            // V1: récupère le glyph du numéro directement à la position du mot « numéro »
+            const verseEndGlyphV1 =
+                typeof verseNumberPosition === "number"
+                    ? QPCFontProvider.getWordGlyph(verseSurahNumber, verse.verseNumber, verseNumberPosition, "1")
+                    : "";
 
             // On marquera ce mot comme "fin de verset" pour injecter le chiffre arabe dans `text`
             verseWords[prevIdx].__appendV1 = verseEndGlyphV1;
