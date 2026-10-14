@@ -4,7 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "node --loader ts-node/esm src/index.ts"
+        "dev": "npm run refetch",
+        "refetch": "node src/fetch-pages.js"
     },
     "keywords": [],
     "author": "",
